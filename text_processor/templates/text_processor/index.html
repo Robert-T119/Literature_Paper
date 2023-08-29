@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Text Processor</title>
+    <link rel="stylesheet" href="{% static 'text_processor/web/pdf_viewer.css' %}">
+    <link rel="stylesheet" href="{% static 'text_processor/web/custom_styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+
+<body>
+    <h1>Welcome to the PDF Text Processor</h1>
+
+    <div class="main-container">
+
+        <!-- PDF Upload Input -->
+        <div class="pdf-upload-container">
+            <form action="/upload_pdf/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="pdf-upload-input" name="pdf_file" accept=".pdf">
+                <button type="submit">Upload PDF</button>
+            </form>
+            <div id="text-options">
+                <button id="summarizeBtn" onclick="summarizeText()">Summarize</button>
+                <button id="explainBtn" onclick="explainText()">Explain</button>
+            </div>
+        </div>
+
+        <!-- PDF and Chat Container -->
+        <div class="pdf-chat-container">
+            <!-- PDF Viewer -->
+            <div class="pdf-container">
+                {% if file_url %}
+                <div id="pdf-viewer">
+                    <iframe id="pdf-viewer-frame" src="{% static 'pdfjs-3/web/viewer.html' %}?file=/{{ file_url }}"
+                        width="100%" height="600px"></iframe>
+                </div>
+                {% else %}
+                <div id="pdf-placeholder">
+                    No PDF loaded.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Chatbox -->
+            <div class="chat-container">
+                <h2 class="chat-title">Chatbox</h2> <!-- This is the new title for the chatbox -->
+                <div id="chatbox">
+                    <div id="chat-messages"></div>
+                    <textarea id="user-input" placeholder="Type your message..."></textarea>
+                    <button onclick="sendMessage()">Send</button>
+                    <input type="hidden" id="pdf-content" value="{{ request.session.pdf_content|default:'' }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'text_processor/text_processor.js' %}"></script>
+</body>
+
+</html>
