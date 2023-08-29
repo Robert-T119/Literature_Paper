@@ -33,14 +33,14 @@
 </div>
 
 {% if results %}
-<div style="margin-top: 30px;">
-    <h3>Results:</h3>
-    <ul>
-        {% for paper in results %}
-        <li>{{ paper }}</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div>
+        <h3>Results:</h3>
+        <ul>
+            {% for paper in results %}
+                <li>{{ paper }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endif %}
 
 </body>
