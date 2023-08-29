@@ -32,11 +32,11 @@
     </form>
 </div>
 
-{% if results %}
+{% if papers %}
     <div>
         <h3>Results:</h3>
         <ul>
-            {% for paper in results %}
+            {% for paper in papers %}
                 <li>{{ paper }}</li>
             {% endfor %}
         </ul>
