@@ -4,10 +4,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.homepage, name='homepage'),  # New centralized homepage
+    path('pdf_chat/', views.index, name='index'),  # Previous main page of pdf_chat
     path('upload_pdf/', views.upload_pdf, name='upload_pdf'),
     path('process_text/', views.process_text, name='process_text'),
-    # path('serve_pdf/', views.serve_pdf, name='serve_pdf'),
 ]
 
 if settings.DEBUG:

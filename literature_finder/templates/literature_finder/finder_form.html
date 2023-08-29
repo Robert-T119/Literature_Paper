@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Finder</title>
+    <!-- You can include any additional styles or scripts here -->
+</head>
+<body>
+
+<div style="width: 60%; margin: auto;">
+    <h2>Paper Finder</h2>
+    <form action="{% url 'paper_finder' %}" method="post">
+        {% csrf_token %}
+        <div style="margin-bottom: 20px;">
+            <label for="concepts">Select Concepts:</label><br>
+            <select id="concepts" name="concepts" multiple style="width: 100%; height: 120px;">
+                {% for concept, url in concept_list %}
+                    <option value="{{ url }}">{{ concept }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label for="start_date">Start Date:</label><br>
+            <input type="date" id="start_date" name="start_date">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label for="end_date">End Date:</label><br>
+            <input type="date" id="end_date" name="end_date">
+        </div>
+        <input type="submit" value="Search">
+    </form>
+</div>
+
+{% if results %}
+<div style="margin-top: 30px;">
+    <h3>Results:</h3>
+    <ul>
+        {% for paper in results %}
+        <li>{{ paper }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+</body>
+</html>
+

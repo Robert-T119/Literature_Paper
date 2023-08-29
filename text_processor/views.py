@@ -15,6 +15,9 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 MAX_TOKENS = 4000  # Max token count for a single API call_
 
+def homepage(request):
+    return render(request, 'dashboard.html')
+
 def index(request):
     context = {}
     if 'pdf_url' in request.session:

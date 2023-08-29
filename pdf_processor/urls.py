@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('text_processor.urls')),
+    path('literature_finder/', include('literature_finder.urls')),
 ]
 
 if settings.DEBUG:
