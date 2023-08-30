@@ -5,7 +5,7 @@
     <title>Upload PDF</title>
 </head>
 <body>
-    <form action="{% url 'paper_extract:upload' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'paper_extract:upload_pdf' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="pdf_file">
         <input type="submit" value="Upload">
