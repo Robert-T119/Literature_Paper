@@ -1,17 +1,21 @@
 from django.shortcuts import render
 from .Data_Fetching import extract_papers_from_openalex_search, generate_date_ranges
-from .Text_Processing import clean_text, lowercase_text, tokenize_text, remove_stopwords, lemmatize_tokens, is_relevant
+from .Text_Processing import clean_text, lowercase_text, tokenize_text, remove_stopwords, lemmatize_tokens, is_relevant, run_prediction, get_embedding
 from .Constants import concept_list
+import pandas as pd
+from openai.embeddings_utils import cosine_similarity
 
 def paper_finder_view(request):
-    relevant_papers = []
-    
+    papers_to_send = []  # Initialize here
+
     if request.method == "POST":
         selected_urls = request.POST.getlist('concepts')
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
-        
-        # Fetching papers based on selected concepts and date range
+        target_embedding_word = request.POST.get('target_embedding_word')
+
+
+        # Fetching papers
         papers = []
         for concept_id in selected_urls:
             for date in generate_date_ranges(start_date, end_date):
@@ -19,14 +23,40 @@ def paper_finder_view(request):
                 papers_for_date = extract_papers_from_openalex_search(search_url, 1000, date)  # Limit of 1000 as an example
                 papers.extend(papers_for_date)
 
-        for paper in papers:
-            cleaned_abstract = clean_text(paper[4])  # Updated this line
-            lowered_abstract = lowercase_text(cleaned_abstract)
-            tokenized_abstract = tokenize_text(lowered_abstract)
-            non_stopwords_abstract = remove_stopwords(tokenized_abstract)
-            lemmatized_abstract = lemmatize_tokens(non_stopwords_abstract)
-            paper.append(lemmatized_abstract)  # Appending Processed Abstract to the end of the paper list
-            
-        relevant_papers = [paper for paper in papers if is_relevant(paper[-1])]  # Using the last element as it contains the Processed Abstract
+        # Pre-process the papers
+        df = pd.DataFrame(papers, columns=["DOI", "Title", "Authors", "Publication Date", "Abstract", "Concepts"])
+        df['Cleaned Abstract'] = df['Abstract'].apply(clean_text).apply(lowercase_text)
+        df['Tokens'] = df['Cleaned Abstract'].apply(tokenize_text).apply(remove_stopwords).apply(lemmatize_tokens)
+        df['Is Relevant'] = df['Cleaned Abstract'].apply(is_relevant)
+        
+        # Filter Relevant Papers
+        sofc_relevant_papers = df[df['Is Relevant']]
 
-    return render(request, 'literature_finder/finder_form.html', {'papers': relevant_papers, 'concept_list': concept_list})
+        # OpenAI Processing
+        separator = "\n\n###\n\n"
+        sofc_model_name = "ada:ft-personal-2023-07-29-19-02-14"
+        sofc_predictions = run_prediction(sofc_model_name, sofc_relevant_papers['Cleaned Abstract'] + separator)
+        sofc_relevant_papers['SOFC Predictions'] = sofc_predictions
+
+        sofc_positive_papers = sofc_relevant_papers[sofc_relevant_papers['SOFC Predictions'] == 'positive']
+        sofc_materials_model_name = "ada:ft-personal-2023-07-27-12-26-20"
+        sofc_materials_predictions = run_prediction(sofc_materials_model_name, sofc_positive_papers['Cleaned Abstract'] + separator)
+        sofc_positive_papers['SOFC Materials Predictions'] = sofc_materials_predictions
+
+        # Text Embeddings and Similarity Score
+        target_embedding = get_embedding(target_embedding_word)
+        target_embedding = get_embedding(target_embedding_word)
+        sofc_positive_papers['embedding'] = sofc_positive_papers['Abstract'].apply(get_embedding)
+        sofc_positive_papers['similarity_score'] = sofc_positive_papers['embedding'].apply(lambda x: cosine_similarity(x, target_embedding))
+        sofc_positive_papers = sofc_positive_papers.sort_values('similarity_score', ascending=False)
+
+        # Save Results to Excel
+        sofc_positive_papers = sofc_positive_papers[["DOI", "Title", "SOFC Predictions", "SOFC Materials Predictions", "similarity_score"]]
+        sofc_positive_papers.to_excel('output.xlsx', index=False)
+
+        for paper in papers_to_send:
+            paper['SOFC_Predictions'] = paper.pop('SOFC Predictions')
+            paper['SOFC_Materials_Predictions'] = paper.pop('SOFC Materials Predictions')
+
+
+    return render(request, 'literature_finder/finder_form.html', {'papers': papers_to_send, 'concept_list': concept_list})
