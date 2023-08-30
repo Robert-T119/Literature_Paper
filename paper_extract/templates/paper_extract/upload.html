@@ -10,5 +10,23 @@
         <input type="file" name="pdf_file">
         <input type="submit" value="Upload">
     </form>
+
+    <!-- Add the list of uploaded PDFs here -->
+    <h2>Uploaded PDFs</h2>
+    <ul>
+    {% for pdf in all_pdfs %}
+        <li>{{ pdf.file_name }} - Uploaded at: {{ pdf.upload_time|date:"F j, Y, P" }}</li>
+    {% endfor %}
+    </ul>
+
+    {% if dois %}
+    <h2>Extracted DOIs:</h2>
+    <ul>
+        {% for doi in dois %}
+        <li>{{ doi }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
 </body>
 </html>
