@@ -1,11 +1,8 @@
 import os
 import re
-import pandas as pd
 import requests
-from tabulate import tabulate
 from pdf2image import convert_from_path
 import pytesseract
-from PyPDF2 import PdfReader
 
 def extract_potential_dois(text):
     doi_pattern = r"10\.\d{4,9}/\S+"
@@ -15,17 +12,34 @@ def extract_potential_dois(text):
 def clean_doi(doi):
     return doi.rstrip('.')
 
-def extract_text_from_pdf_using_ocr(file_path):
-    images = convert_from_path(file_path, dpi=300, first_page=1, last_page=1)
-    if images:
-        text = pytesseract.image_to_string(images[0])
-        return text
-    return ""
+def extract_text_from_pdf_using_ocr(file_object):
+    """
+    Extract text from a PDF using OCR.
+    :param file_object: The file object of the uploaded PDF.
+    :return: Extracted text from the PDF.
+    """
+    # Convert PDF pages to images
+    images = convert_from_path(file_object)
 
-def extract_doi_from_pdf_using_ocr(file_path):
-    text = extract_text_from_pdf_using_ocr(file_path)
-    dois = extract_potential_dois(text)
-    return clean_doi(dois[0]) if dois else "N/A"
+    # Extract text from each image
+    extracted_texts = [pytesseract.image_to_string(img) for img in images]
+
+    # Combine all extracted texts
+    combined_text = "\n".join(extracted_texts)
+    
+    return combined_text
+
+def extract_doi_from_pdf_using_ocr(file_object):
+    """
+    Extract DOIs from a PDF using OCR.
+    :param file_object: The file object of the uploaded PDF.
+    :return: List of extracted DOIs.
+    """
+    text = extract_text_from_pdf_using_ocr(file_object)
+    potential_dois = extract_potential_dois(text)
+    cleaned_dois = [clean_doi(doi) for doi in potential_dois]
+    
+    return cleaned_dois
 
 def abstract_from_inverted_index(inverted_index):
     word_positions = [(word, pos) for word, positions in inverted_index.items() for pos in positions]
@@ -64,12 +78,9 @@ def get_paper_info(doi):
     
     return authors, publication_date, title, concepts, abstract, referenced_works, related_works
 
-def hybrid_doi_extraction(file_path):
-    # Extract text once
-    with open(file_path, 'rb') as file:
-        pdf_reader = PdfReader(file)
-        text = ''.join(page.extract_text() for page in pdf_reader.pages)
-    
+def process_uploaded_pdf(file_object):
+    text = file_object.read().decode()
+
     # Step 1: Extract DOI using the original text-based method
     doi_pattern = r"\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?![\"&\'<>])\S)+)\b"
     matches = re.findall(doi_pattern, text)
@@ -80,33 +91,7 @@ def hybrid_doi_extraction(file_path):
     
     # Step 3: If OpenAlex returns N/A, use the OCR-based method
     if paper_info[0] == "N/A":
-        doi = extract_doi_from_pdf_using_ocr(file_path)
+        doi = extract_doi_from_pdf_using_ocr(file_object)
         paper_info = get_paper_info(doi)
-    
-    return doi, paper_info
 
-directory = '/Users/bohui/Projects/Paper_filter/Test_paper'
-pdf_files = [filename for filename in os.listdir(directory) if filename.endswith('.pdf')]
-total_files = len(pdf_files)
-
-
-table_data = []
-
-for index, filename in enumerate(pdf_files, start=1):
-    file_path = os.path.join(directory, filename)
-    doi, paper_info = hybrid_doi_extraction(file_path)
-    table_data.append([filename, doi, *paper_info])
-
-    # Calculate and print progress percentage
-    progress_percentage = (index / total_files) * 100
-    print(f"Progress: {progress_percentage:.2f}% done")
-
-table_headers = ["File Name", "DOI", "Authors", "Publication Date", "Title", "Concepts", "Abstract", "Referenced Works", "Related Works"]
-table = tabulate(table_data, headers=table_headers, tablefmt="pretty")
-print(table)
-
-df = pd.DataFrame(table_data, columns=table_headers)
-try:
-    df.to_excel("/Users/bohui/Projects/Paper_filter/Extracted_info.xlsx", index=False)
-except Exception as e:
-    print(f"Exception occurred: {e}")
+    return [doi, *paper_info]
