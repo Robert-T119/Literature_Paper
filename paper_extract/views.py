@@ -1,26 +1,19 @@
-from django.shortcuts import render
-from paper_extract.Hybrid_method import process_uploaded_pdf
+from django.shortcuts import render, redirect
+from .forms import PDFUploadForm
+from .Hybrid_method import extract_doi_from_pdf_using_ocr
 
-def upload_and_extract_view(request):
-    context = {}
-    if request.method == "POST" and request.FILES['uploaded_pdf']:
-        uploaded_pdf = request.FILES['uploaded_pdf']
-        
-        # Use the modified function to process the uploaded PDF
-        paper_info = process_uploaded_pdf(uploaded_pdf)
-        
-        doi, authors, publication_date, title, concepts, abstract, referenced_works, related_works = paper_info
+def upload_pdf_view(request):
+    if request.method == "POST":
+        form = PDFUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Handle the uploaded file here
+            uploaded_pdf = request.FILES['uploaded_pdf']
+            extracted_dois = extract_doi_from_pdf_using_ocr(uploaded_pdf)
 
-        # Add the extracted information to the context
-        context.update({
-            'doi': doi,
-            'authors': authors,
-            'publication_date': publication_date,
-            'title': title,
-            'concepts': concepts,
-            'abstract': abstract,
-            'referenced_works': referenced_works,
-            'related_works': related_works,
-        })
+            # Here, you can use the extracted DOIs as needed, or even pass them to the template.
+            # For the sake of demonstration, we're redirecting to the same page.
+            return redirect('upload_pdf')
+    else:
+        form = PDFUploadForm()
 
-    return render(request, 'paper_extract/upload.html', context)
+    return render(request, 'paper_extract/upload.html', {'form': form})
