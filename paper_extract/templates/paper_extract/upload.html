@@ -11,22 +11,33 @@
         <input type="submit" value="Upload">
     </form>
 
-    <!-- Add the list of uploaded PDFs here -->
+    <button onclick="location.href='{% url 'paper_extract:extract_dois' %}'">Extract DOIs</button>
+
     <h2>Uploaded PDFs</h2>
     <ul>
     {% for pdf in all_pdfs %}
-        <li>{{ pdf.file_name }} - Uploaded at: {{ pdf.upload_time|date:"F j, Y, P" }}</li>
+        <li>{{ pdf.file_name }} - Uploaded at: {{ pdf.upload_time|date:"F j, Y, P" }}
+        <a href="{% url 'paper_extract:delete_pdf' pdf.id %}">Delete</a></li>
     {% endfor %}
     </ul>
 
-    {% if dois %}
-    <h2>Extracted DOIs:</h2>
+    {% if papers %}
+    <h2>Extracted Paper Details:</h2>
     <ul>
-        {% for doi in dois %}
-        <li>{{ doi }}</li>
+        {% for paper in papers %}
+        <li>
+            DOI: {{ paper.doi }}<br>
+            Title: {{ paper.title }}<br>
+            Authors: {{ paper.authors }}<br>
+            Abstract: {{ paper.abstract }}<br>
+            Publication Date: {{ paper.publication_date }}<br>
+            Concepts: {{ paper.concepts }}<br>
+<!-- Referenced Works: {{ paper.referenced_works }}<br> -->
+<!-- Related Works: {{ paper.related_works }}<br> -->
+        </li>
         {% endfor %}
     </ul>
-    {% endif %}
+    {% endif %}    
 
 </body>
 </html>

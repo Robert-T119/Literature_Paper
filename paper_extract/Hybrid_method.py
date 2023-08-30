@@ -12,12 +12,28 @@ def extract_potential_dois(text):
 def clean_doi(doi):
     return doi.rstrip('.')
 
+def extract_doi_from_pdf_text(file_path):
+    # Define the DOI regex pattern
+    doi_pattern = r"\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?![\"&\'<>])\S)+)\b"
+    
+    # Extract text from the PDF
+    try:
+        import PyPDF2
+        with open(file_path, 'rb') as file:
+            pdf_reader = PyPDF2.PdfFileReader(file)
+            pdf_text = ''
+            for page_num in range(pdf_reader.numPages):
+                page = pdf_reader.getPage(page_num)
+                pdf_text += page.extractText()
+                
+            # Search for DOIs in the extracted text
+            matches = re.findall(doi_pattern, pdf_text)
+            return matches[0] if matches else None
+    except Exception as e:
+        # In case of any errors (e.g., the PDF is encrypted or PyPDF2 is not installed), return None
+        return None
+
 def extract_text_from_pdf_using_ocr(file_object):
-    """
-    Extract text from a PDF using OCR.
-    :param file_object: The file object of the uploaded PDF.
-    :return: Extracted text from the PDF.
-    """
     # Convert PDF pages to images
     images = convert_from_path(file_object)
 
@@ -30,11 +46,6 @@ def extract_text_from_pdf_using_ocr(file_object):
     return combined_text
 
 def extract_doi_from_pdf_using_ocr(file_object):
-    """
-    Extract DOIs from a PDF using OCR.
-    :param file_object: The file object of the uploaded PDF.
-    :return: List of extracted DOIs.
-    """
     text = extract_text_from_pdf_using_ocr(file_object)
     potential_dois = extract_potential_dois(text)
     cleaned_dois = [clean_doi(doi) for doi in potential_dois]
