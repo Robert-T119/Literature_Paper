@@ -1,33 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Literature Finder</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Finder</title>
+    <!-- You can include any additional styles or scripts here -->
 </head>
 <body>
 
-<h1>Find Relevant Papers</h1>
-
-<form method="post">
-    {% csrf_token %}
-    
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" required>
-    
-    <label for="end_date">End Date:</label>
-    <input type="date" id="end_date" name="end_date" required>
-
-    <label for="concepts">Select Concepts:</label>
-    <select id="concepts" name="concepts" multiple required>
-        {% for concept in concept_list %}
-        <option value="{{ concept.id }}">{{ concept.name }}</option>
-        {% endfor %}
-    </select>
-
-    <label for="target_embedding_word">Target Embedding Word:</label>
-    <input type="text" id="target_embedding_word" name="target_embedding_word" required>
-    
-    <input type="submit" value="Submit">
-</form>
+<div style="width: 60%; margin: auto;">
+    <h2>Paper Finder</h2>
+    <form action="{% url 'paper_finder' %}" method="post">
+        {% csrf_token %}
+        <div style="margin-bottom: 20px;">
+            <label for="concepts">Select Concepts:</label><br>
+            <select id="concepts" name="concepts" multiple style="width: 100%; height: 120px;">
+                {% for concept, url in concept_list %}
+                    <option value="{{ url }}">{{ concept }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label for="start_date">Start Date:</label><br>
+            <input type="date" id="start_date" name="start_date">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label for="end_date">End Date:</label><br>
+            <input type="date" id="end_date" name="end_date">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label for="target_embedding_word">Target Embedding Word:</label><br>
+            <input type="text" id="target_embedding_word" name="target_embedding_word" placeholder="Enter the word for embedding">
+        </div>
+        <input type="submit" value="Search">
+    </form>
+</div>
 
 {% if papers %}
 <h2>Relevant Papers</h2>

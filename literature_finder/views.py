@@ -45,7 +45,6 @@ def paper_finder_view(request):
 
         # Text Embeddings and Similarity Score
         target_embedding = get_embedding(target_embedding_word)
-        target_embedding = get_embedding(target_embedding_word)
         sofc_positive_papers['embedding'] = sofc_positive_papers['Abstract'].apply(get_embedding)
         sofc_positive_papers['similarity_score'] = sofc_positive_papers['embedding'].apply(lambda x: cosine_similarity(x, target_embedding))
         sofc_positive_papers = sofc_positive_papers.sort_values('similarity_score', ascending=False)
@@ -54,9 +53,12 @@ def paper_finder_view(request):
         sofc_positive_papers = sofc_positive_papers[["DOI", "Title", "SOFC Predictions", "SOFC Materials Predictions", "similarity_score"]]
         sofc_positive_papers.to_excel('output.xlsx', index=False)
 
+        papers_to_send = sofc_positive_papers.to_dict(orient='records')
+
         for paper in papers_to_send:
             paper['SOFC_Predictions'] = paper.pop('SOFC Predictions')
             paper['SOFC_Materials_Predictions'] = paper.pop('SOFC Materials Predictions')
 
-
-    return render(request, 'literature_finder/finder_form.html', {'papers': papers_to_send, 'concept_list': concept_list})
+        return render(request, 'literature_finder/finder_form.html', {'papers': papers_to_send, 'concept_list': concept_list})
+    else:
+        return render(request, 'literature_finder/finder_form.html', {'concept_list': concept_list})
