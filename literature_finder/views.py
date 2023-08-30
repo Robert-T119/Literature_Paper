@@ -20,13 +20,13 @@ def paper_finder_view(request):
                 papers.extend(papers_for_date)
 
         for paper in papers:
-            cleaned_abstract = clean_text(paper['Abstract'])
+            cleaned_abstract = clean_text(paper[4])  # Updated this line
             lowered_abstract = lowercase_text(cleaned_abstract)
             tokenized_abstract = tokenize_text(lowered_abstract)
             non_stopwords_abstract = remove_stopwords(tokenized_abstract)
             lemmatized_abstract = lemmatize_tokens(non_stopwords_abstract)
-            paper['Processed Abstract'] = lemmatized_abstract
+            paper.append(lemmatized_abstract)  # Appending Processed Abstract to the end of the paper list
             
-        relevant_papers = [paper for paper in papers if is_relevant(paper['Processed Abstract'])]
+        relevant_papers = [paper for paper in papers if is_relevant(paper[-1])]  # Using the last element as it contains the Processed Abstract
 
-    return render(request, 'literature_finder/finder_form.html', {'papers': relevant_papers})
+    return render(request, 'literature_finder/finder_form.html', {'papers': relevant_papers, 'concept_list': concept_list})

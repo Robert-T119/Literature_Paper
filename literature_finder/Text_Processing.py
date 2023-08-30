@@ -37,7 +37,7 @@ def lemmatize_tokens(tokens):
     return [lemmatizer.lemmatize(token) for token in tokens]
 
 def is_relevant(abstract):
-    if pd.isnull(abstract):  # Check if the abstract is NaN
+    if not isinstance(abstract, str):  # Ensure the abstract is a string
         return False
     return any(keyword in abstract.lower() for keyword in must_satisfy_keywords) # Make sure to check in lowercase
 
