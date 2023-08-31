@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Upload PDF</title>
+    <!-- Add the CSS styles here -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
     <form action="{% url 'paper_extract:upload_pdf' %}" method="post" enctype="multipart/form-data">
@@ -23,21 +35,35 @@
 
     {% if papers %}
     <h2>Extracted Paper Details:</h2>
-    <ul>
-        {% for paper in papers %}
-        <li>
-            DOI: {{ paper.doi }}<br>
-            Title: {{ paper.title }}<br>
-            Authors: {{ paper.authors }}<br>
-            Abstract: {{ paper.abstract }}<br>
-            Publication Date: {{ paper.publication_date }}<br>
-            Concepts: {{ paper.concepts }}<br>
-<!-- Referenced Works: {{ paper.referenced_works }}<br> -->
-<!-- Related Works: {{ paper.related_works }}<br> -->
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>DOI</th>
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Abstract</th>
+                <th>Publication Date</th>
+                <th>Concepts</th>
+                <th>Referenced Works</th>
+                <th>Related Works</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paper in papers %}
+            <tr>
+                <td>{{ paper.doi }}</td>
+                <td>{{ paper.title }}</td>
+                <td>{{ paper.authors }}</td>
+                <td>{{ paper.abstract }}</td>
+                <td>{{ paper.publication_date }}</td>
+                <td>{{ paper.concepts }}</td>
+                <td>{{ paper.referenced_works }}</td>
+                <td>{{ paper.related_works }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 
 </body>
 </html>
