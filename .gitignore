@@ -130,4 +130,5 @@ dmypy.json
 cython_debug/
 
 #meida
-media/
+media/temp/*.pdf
+media/uploaded_pdfs/*.pdf
