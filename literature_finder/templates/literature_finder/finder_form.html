@@ -1,66 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paper Finder</title>
-    <!-- You can include any additional styles or scripts here -->
-</head>
-<body>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<div style="width: 60%; margin: auto;">
-    <h2>Paper Finder</h2>
-    <form action="{% url 'paper_finder' %}" method="post">
-        {% csrf_token %}
-        <div style="margin-bottom: 20px;">
-            <label for="concepts">Select Concepts:</label><br>
-            <select id="concepts" name="concepts" multiple style="width: 100%; height: 120px;">
+        html, body {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #f4f4f4, #e0e0e0);
+        }
+
+        .title-bar {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 10px 20px; /* Adjusted padding */
+            display: flex; /* Added flex display */
+            justify-content: space-between; /* Added spacing justification */
+            align-items: center; /* Added alignment */
+            font-size: 1.3em;
+        }
+
+        .title-bar h1 {
+            font-weight: 700;
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            margin-right: auto; /* Push it to the leftmost part */
+            padding-right: 20px; /* Added padding for spacing */
+            border-right: 1px solid white; /* Added border for visual separation */
+        }
+
+        .content {
+            width: 100%;
+            max-width: 1440px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            overflow-x: auto;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        input[type="submit"] {
+            width: auto;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title-bar">
+        <a href="/" class="home-link">Homepage</a> 
+        <h1>Paper Finder</h1>
+    </div>
+    <div class="content">
+        <form action="{% url 'paper_finder' %}" method="post">
+            {% csrf_token %}
+            <label for="concepts">Select Concepts:</label>
+            <select id="concepts" name="concepts" multiple style="height: 120px;">
                 {% for concept, url in concept_list %}
                     <option value="{{ url }}">{{ concept }}</option>
                 {% endfor %}
             </select>
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label for="start_date">Start Date:</label><br>
+            <label for="start_date">Start Date:</label>
             <input type="date" id="start_date" name="start_date">
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label for="end_date">End Date:</label><br>
+            <label for="end_date">End Date:</label>
             <input type="date" id="end_date" name="end_date">
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label for="target_embedding_word">Target Embedding Word:</label><br>
+            <label for="target_embedding_word">Target Embedding Word:</label>
             <input type="text" id="target_embedding_word" name="target_embedding_word" placeholder="Enter the word for embedding">
-        </div>
-        <input type="submit" value="Search">
-    </form>
-</div>
-
-{% if papers %}
-<h2>Relevant Papers</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>DOI</th>
-            <th>Title</th>
-            <th>SOFC Predictions</th>
-            <th>SOFC Materials Predictions</th>
-            <th>Similarity Score</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for paper in papers %}
-        <tr>
-            <td>{{ paper.DOI }}</td>
-            <td>{{ paper.Title }}</td>
-            <td>{{ paper.SOFC_Predictions }}</td>
-            <td>{{ paper.SOFC_Materials_Predictions }}</td>
-            <td>{{ paper.similarity_score }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endif %}
-
+            <input type="submit" value="Search">
+        </form>
+        {% if papers %}
+        <h2 style="margin-top: 25px; font-size: 1.5em; font-weight: 600; color: #444;">Relevant Papers</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>DOI</th>
+                    <th>Title</th>
+                    <th>SOFC Predictions</th>
+                    <th>SOFC Materials Predictions</th>
+                    <th>Similarity Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td>{{ paper.DOI }}</td>
+                    <td>{{ paper.Title }}</td>
+                    <td>{{ paper.SOFC_Predictions }}</td>
+                    <td>{{ paper.SOFC_Materials_Predictions }}</td>
+                    <td>{{ paper.similarity_score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
 </body>
+
 </html>
