@@ -16,10 +16,10 @@ def upload_pdf_view(request):
                 instance = UploadedPDF(pdf_file=file)
                 instance.save()
             
-            return redirect('paper_extract:upload_pdf')
+            return redirect('Paper_Extractor:upload_pdf')
     else:
         form = PDFUploadForm()
-    return render(request, 'paper_extract/upload.html', {'form': form, 'all_pdfs': all_pdfs})
+    return render(request, 'Paper_Extractor/upload.html', {'form': form, 'all_pdfs': all_pdfs})
 
 def delete_pdf_view(request, pdf_id):
     pdf_to_delete = UploadedPDF.objects.get(id=pdf_id)
@@ -32,7 +32,7 @@ def delete_pdf_view(request, pdf_id):
     # Delete the database record
     pdf_to_delete.delete()
     
-    return redirect(reverse('paper_extract:upload_pdf'))
+    return redirect(reverse('Paper_Extractor:upload_pdf'))
 
 def extract_dois_view(request):
     all_doi_results = []
@@ -71,4 +71,4 @@ def extract_dois_view(request):
                 'related_works': paper_details[6]
             })
 
-    return render(request, 'paper_extract/upload.html', {'dois': all_doi_results, 'papers': all_paper_info, 'all_pdfs': all_pdfs})
+    return render(request, 'Paper_Extractor/upload.html', {'dois': all_doi_results, 'papers': all_paper_info, 'all_pdfs': all_pdfs})

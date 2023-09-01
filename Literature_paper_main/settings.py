@@ -20,7 +20,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'paper_extract',
+    'Paper_Extractor',
     'text_processor',
     'Paper_Finder',
     'django.contrib.admin',

@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('text_processor.urls')),
     path('Paper_Finder/', include('Paper_Finder.urls')),
-    path('paper_extract/', include('paper_extract.urls', namespace='paper_extract')),
+    path('Paper_Extractor/', include('Paper_Extractor.urls', namespace='Paper_Extractor')),
 ]
 
 if settings.DEBUG:

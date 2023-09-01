@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class PaperExtractConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'paper_extract'
+    name = 'Paper_Extractor'
