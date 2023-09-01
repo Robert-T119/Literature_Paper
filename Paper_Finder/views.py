@@ -59,6 +59,6 @@ def paper_finder_view(request):
             paper['SOFC_Predictions'] = paper.pop('SOFC Predictions')
             paper['SOFC_Materials_Predictions'] = paper.pop('SOFC Materials Predictions')
 
-        return render(request, 'literature_finder/finder_form.html', {'papers': papers_to_send, 'concept_list': concept_list})
+        return render(request, 'Paper_Finder/finder_form.html', {'papers': papers_to_send, 'concept_list': concept_list})
     else:
-        return render(request, 'literature_finder/finder_form.html', {'concept_list': concept_list})
+        return render(request, 'Paper_Finder/finder_form.html', {'concept_list': concept_list})

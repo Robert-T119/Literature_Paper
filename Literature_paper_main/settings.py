@@ -22,7 +22,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'paper_extract',
     'text_processor',
-    'literature_finder',
+    'Paper_Finder',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'pdf_processor.urls'
+ROOT_URLCONF = 'Literature_paper_main.urls'
 
 TEMPLATES = [
     {
@@ -59,7 +59,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pdf_processor.wsgi.application'
+WSGI_APPLICATION = 'Literature_paper_main.wsgi.application'
 
 
 # Database
