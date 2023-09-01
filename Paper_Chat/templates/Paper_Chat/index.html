@@ -1,0 +1,135 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literature Paper Chat</title>
+    <link rel="stylesheet" href="{% static 'Paper_Chat/web/pdf_viewer.css' %}">
+    <link rel="stylesheet" href="{% static 'Paper_Chat/web/custom_styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .title-bar {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3em;
+            
+        }
+
+        .title-bar h1 {
+            font-weight: 700;
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.3em;
+            margin: 1px auto; /* Center the title */
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            margin-right: auto;
+            padding-right: 20px;
+            border-right: 1px solid white;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .pdf-upload-container, .pdf-chat-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            color: #444;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title-bar">
+        <a href="/" class="home-link">Homepage</a>
+        <h1>Literature Paper Chat</h1>
+    </div>
+    <div class="main-container">
+
+        <!-- PDF Upload Input -->
+        <div class="pdf-upload-container">
+            <form action="/upload_pdf/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="pdf-upload-input" name="pdf_file" accept=".pdf">
+                <button type="submit">Upload PDF</button>
+            </form>
+            <div id="text-options">
+                <button id="summarizeBtn" onclick="summarizeText()">Summarize</button>
+                <button id="explainBtn" onclick="explainText()">Explain</button>
+            </div>
+        </div>
+
+        <!-- PDF and Chat Container -->
+        <div class="pdf-chat-container">
+            <!-- PDF Viewer -->
+            <div class="pdf-container">
+                {% if file_url %}
+                <div id="pdf-viewer">
+                    <iframe id="pdf-viewer-frame" src="{% static 'pdfjs-3/web/viewer.html' %}?file=/{{ file_url }}"
+                        width="100%" height="600px"></iframe>
+                </div>
+                {% else %}
+                <div id="pdf-placeholder">
+                    No PDF loaded.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Chatbox -->
+            <div class="chat-container">
+                <h2 class="chat-title">Chatbox</h2>
+                <div id="chatbox">
+                    <div id="chat-messages"></div>
+                    <textarea id="user-input" placeholder="Type your message..."></textarea>
+                    <button onclick="sendMessage()">Send</button>
+                    <input type="hidden" id="pdf-content" value="{{ request.session.pdf_content|default:'' }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static Paper_Chat'/Paper_Chat.js' %}"></script>
+</body>
+
+</html>
