@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('Paper_Chat.urls')),
+    path('', include('text_processor.urls')),
     path('Paper_Finder/', include('Paper_Finder.urls')),
     path('Paper_Extractor/', include('Paper_Extractor.urls', namespace='Paper_Extractor')),
 ]

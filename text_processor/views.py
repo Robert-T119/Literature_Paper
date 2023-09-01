@@ -23,7 +23,7 @@ def index(request):
     if 'pdf_url' in request.session:
         context['file_url'] = request.session['pdf_url']
         del request.session['pdf_url']
-    return render(request, 'Paper_Chat/index.html', context)
+    return render(request, 'text_processor/index.html', context)
 
 def clean_temp_directory():
     temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp')

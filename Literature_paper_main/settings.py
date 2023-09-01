@@ -21,7 +21,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'Paper_Extractor',
-    'Paper_Chat',
+    'text_processor',
     'Paper_Finder',
     'django.contrib.admin',
     'django.contrib.auth',
