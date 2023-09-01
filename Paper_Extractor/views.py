@@ -19,34 +19,39 @@ def upload_pdf_view(request):
             return redirect('Paper_Extractor:upload_pdf')
     else:
         form = PDFUploadForm()
+    
     return render(request, 'Paper_Extractor/upload.html', {'form': form, 'all_pdfs': all_pdfs})
 
 def delete_pdf_view(request, pdf_id):
     pdf_to_delete = UploadedPDF.objects.get(id=pdf_id)
     file_path = os.path.join(settings.MEDIA_ROOT, pdf_to_delete.pdf_file.name)
     
-    # Delete the file from the filesystem
     if os.path.exists(file_path):
         os.remove(file_path)
     
-    # Delete the database record
     pdf_to_delete.delete()
     
     return redirect(reverse('Paper_Extractor:upload_pdf'))
 
-def extract_dois_view(request):
+def display_upload_page(request):
+    all_pdfs = UploadedPDF.objects.all()
+    return render(request, 'Paper_Extractor/upload.html', {'all_pdfs': all_pdfs})
+
+def process_and_display_results(request):
     all_doi_results = []
     all_paper_info = []
     all_pdfs = UploadedPDF.objects.all()
 
     for pdf in all_pdfs:
+        if not os.path.exists(pdf.pdf_file.path):
+            continue
+
         # Step 1: Extract DOI using the original text-based method
         primary_doi = extract_doi_from_pdf_text(pdf.pdf_file.path)
         
         # Step 2: Fetch details from OpenAlex
         if primary_doi:
             paper_details = get_paper_info(primary_doi)
-            # If authors are not "N/A", we assume the fetched data is valid
             valid_data = paper_details[0] != "N/A"
         else:
             valid_data = False
