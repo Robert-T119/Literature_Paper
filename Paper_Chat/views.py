@@ -119,7 +119,7 @@ def your_summarize_function(text):
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=f"Summarize the following text: {text}",
-            max_tokens=4000
+            max_tokens=1000
         )
         return response.choices[0].text.strip()
     except Exception as e:
@@ -130,7 +130,7 @@ def your_explain_function(text):
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=f"Explain the following text in a systematic way: {text}",
-            max_tokens=4000
+            max_tokens=1000
         )
         return response.choices[0].text.strip()
     except Exception as e:

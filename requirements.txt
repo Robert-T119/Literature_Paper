@@ -22,8 +22,8 @@ bleach==3.1.4
 blessed==1.19.1
 bootstrap4==0.1.0
 boto3==1.24.36
-botocore==1.23.54
-Brotli==1.0.7
+botocore
+# Brotli==1.0.7
 brotlipy==0.7.0
 cached-property==1.5.2
 cachetools==5.2.0
@@ -62,7 +62,7 @@ django-plotly-dash==1.4.2
 django-redis==4.12.1
 django-storages==1.12.3
 django-tinymce==3.0.2
-docker==4.4.4
+# docker==4.4.4
 docker-compose==1.25.5
 dockerpty==0.4.1
 docopt==0.6.2
@@ -87,7 +87,7 @@ googleapis-common-protos==1.56.4
 grpcio==1.47.0
 grpcio-status==1.47.0
 gunicorn==20.0.4
-hiredis==1.1.0
+# hiredis==1.1.0
 hyperlink==19.0.0
 idna==2.8
 iexfinance==0.4.3
@@ -107,7 +107,7 @@ jmespath==0.10.0
 joblib==1.1.0
 json5==0.9.8
 jsonschema==3.2.0
-kiwisolver==1.2.0
+# kiwisolver==1.2.0
 lxml==4.9.0
 MarkupSafe==2.1.1
 matplotlib==3.5.2
@@ -127,7 +127,7 @@ openai==0.27.8
 openpyxl==3.0.3
 ordereddict==1.1
 packaging==21.3
-pandas==2.0.3
+pandas
 pandocfilters==1.4.2
 paramiko==2.11.0
 parso==0.7.0
@@ -154,7 +154,7 @@ pyaml==21.10.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.6.0
-pycosat==0.6.3
+# pycosat==0.6.3
 pycparser==2.19
 pydata-google-auth==1.4.0
 pyflakes==2.2.0
@@ -211,7 +211,7 @@ tornado==6.2
 tqdm==4.42.1
 traitlets==5.3.0
 transliterate==1.10.2
-Twisted==20.3.0
+# Twisted==20.3.0
 txaio==20.4.1
 typing==3.7.4.1
 typing_extensions==4.2.0
