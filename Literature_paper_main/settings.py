@@ -20,6 +20,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'Paper_Search',
     'Paper_Extractor',
     'Paper_Chat',
     'Paper_Finder',
