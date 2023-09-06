@@ -10,6 +10,7 @@ import os
 from PyPDF2 import PdfReader
 import json
 import shutil
+import nltk
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -76,11 +77,20 @@ def process_text_chunkwise(text, query):
         )
         answer = response.choices[0].text.strip()
         if len(answer) > 10:
-            return answer
+            return ensure_complete_sentences(answer)
         start += chunk_size // 2
         end = start + chunk_size
     return "I couldn't find a detailed answer based on the provided document."
 
+def ensure_complete_sentences(text):
+    # Use NLTK's tokenizer to split the text into sentences
+    sentences = nltk.sent_tokenize(text)
+    # If the last sentence ends without a period, it's likely incomplete
+    if not sentences[-1].endswith("."):
+        sentences = sentences[:-1]
+    return " ".join(sentences)
+
+    
 @csrf_exempt
 def process_text(request):
     if request.method != "POST":
@@ -88,7 +98,14 @@ def process_text(request):
     
     try:
         data = json.loads(request.body)
+        
+        # Use the 'text' key instead of 'surroundingText'
         text = data.get('text')
+        print(f"Received text for processing: {text}")
+        if 'pdf_content' not in data:
+            print(f"Expanded text received: {text}")
+
+
         action = data.get('action')
         pdf_content = data.get('pdf_content', "")
 
@@ -121,7 +138,7 @@ def your_summarize_function(text):
             prompt=f"Summarize the following text: {text}",
             max_tokens=1000
         )
-        return response.choices[0].text.strip()
+        return ensure_complete_sentences(response.choices[0].text.strip())
     except Exception as e:
         return str(e)
 
@@ -132,6 +149,6 @@ def your_explain_function(text):
             prompt=f"Explain the following text in a systematic way: {text}",
             max_tokens=1000
         )
-        return response.choices[0].text.strip()
+        return ensure_complete_sentences(response.choices[0].text.strip())
     except Exception as e:
         return str(e)

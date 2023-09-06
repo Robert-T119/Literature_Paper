@@ -1,17 +1,47 @@
 // Utility function to get selected text from PDF.js viewer
 function getSelectedTextFromViewer() {
+    console.log("getSelectedTextFromViewer function called.");
     const viewerIframe = document.getElementById('pdf-viewer-frame');
     const viewerDocument = viewerIframe.contentDocument || viewerIframe.contentWindow.document;
 
     if (viewerDocument) {
-        return viewerDocument.getSelection().toString();
+        let selectedText = viewerDocument.getSelection();
+        let selectedTextData = {
+            selected: selectedText.toString(),
+            surrounding: selectedText.anchorNode.textContent
+        };
+        console.log("Surrounding text captured:", selectedTextData.surrounding);
+        return selectedTextData;
     }
-
     return "";
 }
 
+function getExpandedSelection(selectedText, surroundingText) {
+    const sentences = surroundingText.split('.'); 
+    let startIndex = surroundingText.indexOf(selectedText);
+
+    // Try to adjust the start index to the start of the word
+    while (startIndex > 0 && /\w/.test(surroundingText[startIndex - 1])) {
+        startIndex--;
+    }
+
+    let startSentenceIndex = surroundingText.lastIndexOf('.', startIndex) + 1;
+    let endSentenceIndex = surroundingText.indexOf('.', startIndex + selectedText.length);
+    
+    if (endSentenceIndex === -1) {
+        endSentenceIndex = surroundingText.length;
+    }
+
+    console.log("Sentences split from surrounding text:", sentences);
+    console.log("Start index of selected text:", startIndex);
+    console.log("Start index of surrounding sentence:", startSentenceIndex);
+    console.log("End index of surrounding sentence:", endSentenceIndex);
+    return surroundingText.substring(startSentenceIndex, endSentenceIndex).trim();
+}
+
 function updateButtonStates() {
-    const selectedText = getSelectedTextFromViewer();
+    const selectedTextData = getSelectedTextFromViewer();
+    const selectedText = selectedTextData.selected;
     const summarizeBtn = parent.document.getElementById('summarizeBtn');
     const explainBtn = parent.document.getElementById('explainBtn');
     const optionsDiv = parent.document.getElementById('text-options');
@@ -33,11 +63,12 @@ function wordCount(str) {
 
 function summarizeText() {
     console.log("summarizeText function called.");
-    const text = getSelectedTextFromViewer();
+    const textData = getSelectedTextFromViewer();
+    const text = textData.selected;
     const count = wordCount(text);
 
     if (count > 50) {
-        sendDataToBackend(text, 'summarize');
+        sendDataToBackend(text, 'summarize', textData.surrounding);
     } else {
         alert("Please select more than 50 words to summarize.");
     }
@@ -45,8 +76,9 @@ function summarizeText() {
 
 function explainText() {
     console.log("explainText function called.");
-    const text = getSelectedTextFromViewer();
-    sendDataToBackend(text, 'explain');
+    const textData = getSelectedTextFromViewer();
+    const text = textData.selected;
+    sendDataToBackend(text, 'explain', textData.surrounding);
 }
 
 function sendMessage() {
@@ -77,18 +109,30 @@ function sendMessage() {
     });
 }
 
-function sendDataToBackend(text, action) {
+function sendDataToBackend(text, action, surroundingText) {
     console.log("sendDataToBackend called with action:", action);
+
+    // Use the getExpandedSelection to get an expanded version of the selected text
+    const expandedText = getExpandedSelection(text, surroundingText);
+    console.log("Expanded text for processing:", expandedText);
+    
+    console.log("Sending expanded data to backend:", {
+        text: expandedText,
+        action: action
+    });
+
+    // Use the expanded text for both explaining and summarizing in the chat
     if (action === 'explain') {
-        appendMessage("user", "Please explain: " + text);
+        appendMessage("user", "Please explain: " + expandedText);
     } else if (action === 'summarize') {
-        appendMessage("user", "Please summarize: " + text);
+        appendMessage("user", "Please summarize: " + expandedText);
     }
 
+    // Send the expanded text to the backend for processing
     fetch(`/process_text/`, {
         method: 'POST',
         body: JSON.stringify({
-            text: text,
+            text: expandedText,
             action: action
         }),
         headers: {
