@@ -5,34 +5,64 @@ function getSelectedTextFromViewer() {
     const viewerDocument = viewerIframe.contentDocument || viewerIframe.contentWindow.document;
 
     if (viewerDocument) {
-        let selectedText = viewerDocument.getSelection();
-        let selectedTextData = {
-            selected: selectedText.toString(),
-            surrounding: selectedText.anchorNode.textContent
+        let selection = viewerDocument.getSelection();
+        if (!selection.rangeCount) return "";
+        let range = selection.getRangeAt(0).cloneRange();  // Get the first selected range
+
+        const MAX_EXPANSION = 500; // Define a limit to avoid infinite loops
+        let expansions = 0;
+
+        // Expand the range to capture more context
+        while (range.startOffset > 0 && expansions < MAX_EXPANSION) {
+            range.setStart(range.startContainer, range.startOffset - 1);
+            expansions++;
+        }
+        while (range.endOffset < (range.endContainer.textContent.length - 1) && expansions < MAX_EXPANSION) {
+            range.setEnd(range.endContainer, range.endOffset + 1);
+            expansions++;
+        }
+
+        const surrounding = range.toString();
+        console.log("Surrounding text captured:", surrounding);
+        return {
+            selected: selection.toString(),
+            surrounding: surrounding
         };
-        console.log("Surrounding text captured:", selectedTextData.surrounding);
-        return selectedTextData;
     }
     return "";
 }
 
 function getExpandedSelection(selectedText, surroundingText) {
-    const sentences = surroundingText.split('.'); 
     let startIndex = surroundingText.indexOf(selectedText);
-
-    // Try to adjust the start index to the start of the word
-    while (startIndex > 0 && /\w/.test(surroundingText[startIndex - 1])) {
-        startIndex--;
-    }
-
-    let startSentenceIndex = surroundingText.lastIndexOf('.', startIndex) + 1;
-    let endSentenceIndex = surroundingText.indexOf('.', startIndex + selectedText.length);
+    let startSentenceIndex = startIndex;
+    let endSentenceIndex = startIndex + selectedText.length;
     
-    if (endSentenceIndex === -1) {
-        endSentenceIndex = surroundingText.length;
+    // Expand to the start of the word
+    while (startSentenceIndex > 0 && !/\s/.test(surroundingText[startSentenceIndex])) {
+        startSentenceIndex--;
     }
 
-    console.log("Sentences split from surrounding text:", sentences);
+    // Expand to the end of the word
+    while (endSentenceIndex < surroundingText.length && !/\s/.test(surroundingText[endSentenceIndex])) {
+        endSentenceIndex++;
+    }
+
+    // Attempt to expand to the start of the sentence
+    let sentenceStartIndex = surroundingText.lastIndexOf('.', startSentenceIndex) + 1;
+    if (sentenceStartIndex > 0 && sentenceStartIndex < startIndex) {
+        startSentenceIndex = sentenceStartIndex;
+    }
+
+    // Attempt to expand to the end of the sentence
+    let sentenceEndIndex = surroundingText.indexOf('.', endSentenceIndex);
+    if (sentenceEndIndex === -1) {
+        sentenceEndIndex = surroundingText.length;
+    }
+    if (sentenceEndIndex > endSentenceIndex) {
+        endSentenceIndex = sentenceEndIndex;
+    }
+
+    console.log("Sentences split from surrounding text:", surroundingText.split('.'));
     console.log("Start index of selected text:", startIndex);
     console.log("Start index of surrounding sentence:", startSentenceIndex);
     console.log("End index of surrounding sentence:", endSentenceIndex);
@@ -112,27 +142,27 @@ function sendMessage() {
 function sendDataToBackend(text, action, surroundingText) {
     console.log("sendDataToBackend called with action:", action);
 
-    // Use the getExpandedSelection to get an expanded version of the selected text
-    const expandedText = getExpandedSelection(text, surroundingText);
-    console.log("Expanded text for processing:", expandedText);
+    // Use the getExpandedSelection to get an expanded version of the selected text only for 'explain' action
+    let processedText = action === 'explain' ? getExpandedSelection(text, surroundingText) : text;
+    console.log("Processed text for sending to backend:", processedText);
     
-    console.log("Sending expanded data to backend:", {
-        text: expandedText,
+    console.log("Sending processed data to backend:", {
+        text: processedText,
         action: action
     });
 
-    // Use the expanded text for both explaining and summarizing in the chat
+    // Use the processed text for both explaining and summarizing in the chat
     if (action === 'explain') {
-        appendMessage("user", "Please explain: " + expandedText);
+        appendMessage("user", "Please explain: " + processedText);
     } else if (action === 'summarize') {
-        appendMessage("user", "Please summarize: " + expandedText);
+        appendMessage("user", "Please summarize: " + processedText);
     }
 
-    // Send the expanded text to the backend for processing
+    // Send the processed text to the backend for processing
     fetch(`/process_text/`, {
         method: 'POST',
         body: JSON.stringify({
-            text: expandedText,
+            text: processedText,
             action: action
         }),
         headers: {
