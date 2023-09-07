@@ -35,7 +35,7 @@
             font-weight: 700;
             flex-grow: 1;
             text-align: center;
-            font-size: 1.3em;
+            font-size: 1.5em; /* Make the main title slightly larger */
         }
 
         .home-link {
@@ -58,18 +58,13 @@
             border-radius: 8px;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 1.1em;
-            color: #555;
+        label, select, input[type="text"], input[type="date"] {
+            margin-bottom: 5px; /* Reduce margin-bottom for these elements */
         }
 
         select, input {
             width: 100%;
             padding: 5px;
-            margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -101,12 +96,17 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
+        .paper-result h3 {
+            font-size: 1.6em; /* Increase the size of the paper title */
+            margin-bottom: 10px; /* Add a bit of spacing below the title */
+        }
+
         .pagination {
             margin-top: 25px;
             display: flex;
             align-items: center;
-            justify-content: center; /* centers the pagination */
-            gap: 10px; /* spaces between the elements inside the pagination */
+            justify-content: center;
+            gap: 10px;
         }
 
         .pagination .step-links, .pagination .go-to-page {
@@ -116,7 +116,7 @@
 
         .pagination a, .pagination .current, .pagination .go-to-page input[type="number"], .pagination .go-to-page input[type="submit"] {
             padding: 5px 10px;
-            margin: 0 5px; /* reduces spacing between items for a compact look */
+            margin: 0 5px;
             border-radius: 5px;
             transition: background-color 0.3s;
         }
@@ -138,13 +138,13 @@
         }
 
         .pagination .go-to-page label {
-            margin-right: 5px; /* reduce margin */
+            margin-right: 5px;
         }
 
         .pagination .go-to-page input[type="number"] {
-            width: 50px; /* reduce width */
+            width: 50px;
             padding: 5px;
-            margin: 0; /* remove margin */
+            margin: 0;
             border: 1px solid #3498db;
         }
 
@@ -155,6 +155,43 @@
             cursor: pointer;
             padding: 5px 10px;
         }
+        
+        .search-section, .filters-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px; /* Reduce gap between the elements inside these sections */
+            margin-bottom: 20px;
+        }
+
+        .search-section span, .filters-section label {
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        #customDateRange {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+
+        #customDateRange label, 
+        #customDateRange input[type="date"] {
+            display: inline-block;
+        }
+
+        #customDateRange input[type="date"] {
+            width: auto;
+            margin-right: 15px;
+        }
+
+        .filters-section > label,
+        .filters-section > select {
+            margin-bottom: 15px;
+        }
+
     </style>
 </head>
 
@@ -165,24 +202,40 @@
     </div>
     <div class="content">
         <form method="get" action="{% url 'paper_search_view' %}">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                <label for="search_field" style="margin-right: 10px; white-space: nowrap;">Search in:</label>
-                <select id="search_field" name="search_field" style="width: 150px;">
+            <div class="search-section">
+                <span>Search in:</span>
+                <select id="search_field" name="search_field">
                     <option value="title">Title</option>
                     <option value="abstract">Abstract</option>
                     <option value="full_text">Full Text</option>
                 </select>
-
-                <input type="text" id="title_search" name="title_search" placeholder="Enter keyword..." style="flex: 1;">
+                <input type="text" id="title_search" name="title_search" placeholder="Enter keyword...">
             </div>
-            
-            <label for="sort_by">Sort By:</label>
-            <select id="sort_by" name="sort_by">
-                <option value="publication_date:desc">Publication Date</option>
-                <option value="cited_by_count:desc">Citations Count</option>
-                <option value="referenced_works_count:asc">Referenced works Count</option>
-                <option value="relevance_score:desc">Relevance Score</option>
-            </select>
+            <div class="filters-section">
+                <label for="time_range">Time:</label>
+                <select id="time_range" name="time_range" onchange="toggleCustomRange(this)">
+                    <option value="anytime">Any time</option>
+                    <option value="2023">Since 2023</option>
+                    <option value="2022">Since 2022</option>
+                    <option value="2019">Since 2019</option>
+                    <option value="custom">Custom range</option>
+                </select>
+
+                <div id="customDateRange" style="display: none;">
+                    <label for="from_date">From:</label>
+                    <input type="date" id="from_date" name="from_date">
+                    <label for="to_date">To:</label>
+                    <input type="date" id="to_date" name="to_date">
+                </div>
+                
+                <label for="sort_by">Sort by:</label>
+                <select id="sort_by" name="sort_by">
+                    <option value="publication_date:desc">Publication Date</option>
+                    <option value="cited_by_count:desc">Citations Count</option>
+                    <option value="referenced_works_count:asc">Referenced works Count</option>
+                    <option value="relevance_score:desc">Relevance Score</option>
+                </select>
+            </div>
             
             <input type="submit" value="Search">
         
@@ -195,7 +248,7 @@
                 <p><strong>Abstract:</strong> {{ paper.abstract }}</p>
             </div>
             {% endfor %}
-    
+
             {% if results %}
             <div class="pagination">
                 <span class="step-links">
@@ -222,7 +275,19 @@
             </div>
             {% endif %}
         </form>
-    </div>    
+    </div>
+
+    <script>
+        function toggleCustomRange(selectElem) {
+            const customDateRangeDiv = document.getElementById("customDateRange");
+            if (selectElem.value === "custom") {
+                customDateRangeDiv.style.display = "block";
+            } else {
+                customDateRangeDiv.style.display = "none";
+            }
+        }
+    </script>
+        
 </body>
 
 </html>
