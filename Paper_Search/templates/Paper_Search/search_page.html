@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literature Paper Search</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #f4f4f4, #e0e0e0);
+        }
+
+        .title-bar {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3em;
+        }
+
+        .title-bar h1 {
+            font-weight: 700;
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            margin-right: auto;
+            padding-right: 20px;
+            border-right: 1px solid white;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 1440px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px auto;
+            overflow-x: auto;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        input[type="submit"] {
+            width: auto;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        .paper-result {
+            margin-top: 25px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* centers the pagination */
+            gap: 10px; /* spaces between the elements inside the pagination */
+        }
+
+        .pagination .step-links, .pagination .go-to-page {
+            display: flex;
+            align-items: center;
+        }
+
+        .pagination a, .pagination .current, .pagination .go-to-page input[type="number"], .pagination .go-to-page input[type="submit"] {
+            padding: 5px 10px;
+            margin: 0 5px; /* reduces spacing between items for a compact look */
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a {
+            border: 1px solid #3498db;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .pagination a:hover, .pagination .go-to-page input[type="submit"]:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .pagination .current {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .pagination .go-to-page label {
+            margin-right: 5px; /* reduce margin */
+        }
+
+        .pagination .go-to-page input[type="number"] {
+            width: 50px; /* reduce width */
+            padding: 5px;
+            margin: 0; /* remove margin */
+            border: 1px solid #3498db;
+        }
+
+        .pagination .go-to-page input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title-bar">
+        <a href="/" class="home-link">Homepage</a>
+        <h1>Literature Paper Search</h1>
+    </div>
+    <div class="content">
+        <form method="get" action="{% url 'paper_search_view' %}">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <label for="search_field" style="margin-right: 10px; white-space: nowrap;">Search in:</label>
+                <select id="search_field" name="search_field" style="width: 150px;">
+                    <option value="title">Title</option>
+                    <option value="abstract">Abstract</option>
+                    <option value="full_text">Full Text</option>
+                </select>
+
+                <input type="text" id="title_search" name="title_search" placeholder="Enter keyword..." style="flex: 1;">
+            </div>
+            
+            <label for="sort_by">Sort By:</label>
+            <select id="sort_by" name="sort_by">
+                <option value="publication_date:desc">Publication Date</option>
+                <option value="cited_by_count:desc">Citations Count</option>
+                <option value="referenced_works_count:asc">Referenced works Count</option>
+                <option value="relevance_score:desc">Relevance Score</option>
+            </select>
+            
+            <input type="submit" value="Search">
+        
+            {% for paper in results %}
+            <div class="paper-result">
+                <h3 style="font-size: 1.4em; color: #333;">{{ paper.title }}</h3>
+                <p><strong>DOI:</strong> {{ paper.doi }}</p>
+                <p><strong>Publication Date:</strong> {{ paper.publication_date }}</p>
+                <p><strong>Authors:</strong> {{ paper.authors|join:", " }}</p>
+                <p><strong>Abstract:</strong> {{ paper.abstract }}</p>
+            </div>
+            {% endfor %}
+    
+            {% if results %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_results.has_previous %}
+                        <a href="?title_search={{ search_query }}&page=1&sort_by={{ request.GET.sort_by }}">« first</a>
+                        <a href="?title_search={{ search_query }}&page={{ page_results.previous_page_number }}&sort_by={{ request.GET.sort_by }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ page_results.number }} of {{ page_results.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_results.has_next %}
+                        <a href="?title_search={{ search_query }}&page={{ page_results.next_page_number }}&sort_by={{ request.GET.sort_by }}">next</a>
+                        <a href="?title_search={{ search_query }}&page={{ page_results.paginator.num_pages }}&sort_by={{ request.GET.sort_by }}">last »</a>
+                    {% endif %}
+                </span>
+
+                <div class="go-to-page">
+                    <label for="direct_page">Go to:</label>
+                    <input type="number" id="direct_page" name="direct_page" min="1" max="{{ page_results.paginator.num_pages }}" placeholder="Page No.">
+                    <input type="submit" value="Go">
+                </div>
+            </div>
+            {% endif %}
+        </form>
+    </div>    
+</body>
+
+</html>

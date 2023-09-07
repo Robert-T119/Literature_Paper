@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('Paper_Chat.urls')),
     path('Paper_Finder/', include('Paper_Finder.urls')),
     path('Paper_Extractor/', include('Paper_Extractor.urls', namespace='Paper_Extractor')),
+    path('Paper_Search/', include('Paper_Search.urls')),
 ]
 
 if settings.DEBUG:
