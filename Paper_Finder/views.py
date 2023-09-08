@@ -4,6 +4,9 @@ from .Text_Processing import clean_text, lowercase_text, tokenize_text, remove_s
 from .Constants import concept_list
 import pandas as pd
 from openai.embeddings_utils import cosine_similarity
+from django.http import FileResponse,HttpResponse
+from django.conf import settings
+import os
 
 def paper_finder_view(request):
     papers_to_send = []  # Initialize here
@@ -50,8 +53,9 @@ def paper_finder_view(request):
         sofc_positive_papers = sofc_positive_papers.sort_values('similarity_score', ascending=False)
 
         # Save Results to Excel
-        sofc_positive_papers = sofc_positive_papers[["DOI", "Title", "SOFC Predictions", "SOFC Materials Predictions", "similarity_score"]]
-        sofc_positive_papers.to_excel('output.xlsx', index=False)
+        export_columns = ["DOI", "Title", "Authors", "Publication Date", "Abstract", "SOFC Predictions", "SOFC Materials Predictions", "similarity_score"]
+        sofc_positive_papers_export = sofc_positive_papers[export_columns]
+        sofc_positive_papers_export.to_excel('media/output.xlsx', index=False)
 
         papers_to_send = sofc_positive_papers.to_dict(orient='records')
 
@@ -62,3 +66,12 @@ def paper_finder_view(request):
         return render(request, 'Paper_Finder/finder_form.html', {'papers': papers_to_send, 'concept_list': concept_list})
     else:
         return render(request, 'Paper_Finder/finder_form.html', {'concept_list': concept_list})
+
+def download_output_xlsx(request):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'output.xlsx')
+    if os.path.exists(file_path):
+        response = FileResponse(open(file_path, 'rb'))
+        response['Content-Disposition'] = 'attachment; filename="output.xlsx"'
+        return response
+    else:
+        return HttpResponse('File not found.', content_type='text/plain')

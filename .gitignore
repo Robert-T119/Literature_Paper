@@ -132,3 +132,5 @@ cython_debug/
 #meida
 media/temp/*.pdf
 media/uploaded_pdfs/*.pdf
+media/output.xlsx
+
