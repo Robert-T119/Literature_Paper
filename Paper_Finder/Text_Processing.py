@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import os
 
 # Download NLTK resources
-nltk.download('wordnet')
+# nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
 
 load_dotenv()

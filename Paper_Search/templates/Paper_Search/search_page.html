@@ -241,7 +241,7 @@
         
             {% for paper in results %}
             <div class="paper-result">
-                <h3 style="font-size: 1.4em; color: #333;">{{ paper.title }}</h3>
+                <h3 style="font-size: 1.4em; color: #333;"><a href="{{ paper.doi }}" target="_blank">{{ paper.title }}</a></h3>
                 <p><strong>DOI:</strong> {{ paper.doi }}</p>
                 <p><strong>Publication Date:</strong> {{ paper.publication_date }}</p>
                 <p><strong>Authors:</strong> {{ paper.authors|join:", " }}</p>
