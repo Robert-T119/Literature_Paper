@@ -110,6 +110,24 @@
         tbody tr:hover {
             background-color: #f5f5f5;
         }
+
+        .download-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0px 30px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .download-button:hover {
+            background-color: #2980b9;
+        }
+
     </style>
 </head>
 
@@ -179,6 +197,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'Paper_Extractor:download_excel' %}" class="download-button">Download Extracted Papers (Excel)</a>
     {% endif %}
 
     <script>
