@@ -51,7 +51,7 @@ def paper_finder_view(request):
 
         # Save Results to Excel
         sofc_positive_papers = sofc_positive_papers[["DOI", "Title", "SOFC Predictions", "SOFC Materials Predictions", "similarity_score"]]
-        sofc_positive_papers.to_excel('media/output.xlsx', index=False)
+        sofc_positive_papers.to_excel('output.xlsx', index=False)
 
         papers_to_send = sofc_positive_papers.to_dict(orient='records')
 

@@ -117,6 +117,24 @@
         tbody tr:hover {
             background-color: #f5f5f5;
         }
+
+        .download-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        margin: 20px 0;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
@@ -166,6 +184,10 @@
                 {% endfor %}
             </tbody>
         </table>
+        <a href="{% url 'download_output_xlsx' %}" class="download-btn">
+            Download Excel File
+        </a>
+        
         {% endif %}
     </div>
 </body>
