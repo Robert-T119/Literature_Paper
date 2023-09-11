@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Literature Paper Finder</title>
+    <title>SOFC Literature Paper Finder</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -123,22 +123,22 @@
 <body>
     <div class="title-bar">
         <a href="/" class="home-link">Homepage</a> 
-        <h1>Literatue Paper Finder</h1>
+        <h1>SOFC Literatue Paper Finder</h1>
     </div>
     <div class="content">
         <form action="{% url 'paper_finder' %}" method="post">
             {% csrf_token %}
-            <label for="concepts">Select Concepts:</label>
+            <label for="concepts">Relevant Research Area:</label>
             <select id="concepts" name="concepts" multiple style="height: 120px;">
                 {% for concept, url in concept_list %}
                     <option value="{{ url }}">{{ concept }}</option>
                 {% endfor %}
             </select>
-            <label for="start_date">Start Date:</label>
+            <label for="start_date">Publication_Date from :</label>
             <input type="date" id="start_date" name="start_date">
-            <label for="end_date">End Date:</label>
+            <label for="end_date">Publication_Date to :</label>
             <input type="date" id="end_date" name="end_date">
-            <label for="target_embedding_word">Target Embedding Word:</label>
+            <label for="target_embedding_word">Relevance Ranking Term:</label>
             <input type="text" id="target_embedding_word" name="target_embedding_word" placeholder="Enter the word for embedding">
             <input type="submit" value="Search">
         </form>
