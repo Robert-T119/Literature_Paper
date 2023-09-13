@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Literature Paper Search</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Literature Paper Search
+  </title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>* {
+margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
+}
 
-        html, body {
-            height: 100%;
+html, body {
+height: 100%;
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(to bottom right, #f4f4f4, #e0e0e0);
-        }
+}
 
-        .title-bar {
-            background-color: #333;
+.title-bar {
+background-color: #333;
             color: white;
             width: 100%;
             padding: 10px 20px;
@@ -29,26 +30,26 @@
             justify-content: space-between;
             align-items: center;
             font-size: 1.3em;
-        }
+}
 
-        .title-bar h1 {
-            font-weight: 700;
+.title-bar h1 {
+font-weight: 700;
             flex-grow: 1;
             text-align: center;
             font-size: 1.5em; /* Make the main title slightly larger */
-        }
+}
 
-        .home-link {
-            color: white;
+.home-link {
+color: white;
             text-decoration: none;
             font-size: 1em;
             margin-right: auto;
             padding-right: 20px;
             border-right: 1px solid white;
-        }
+}
 
-        .content {
-            width: 100%;
+.content {
+width: 100%;
             max-width: 1440px;
             padding: 20px;
             background-color: white;
@@ -56,22 +57,22 @@
             margin: 10px auto;
             overflow-x: auto;
             border-radius: 8px;
-        }
+}
 
-        label, select, input[type="text"], input[type="date"] {
-            margin-bottom: 5px; /* Reduce margin-bottom for these elements */
-        }
+label, select, input[type="text"], input[type="date"] {
+margin-bottom: 5px; /* Reduce margin-bottom for these elements */
+}
 
-        select, input {
-            width: 100%;
+select, input {
+width: 100%;
             padding: 5px;
             border-radius: 5px;
             border: 1px solid #ccc;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
+}
 
-        input[type="submit"] {
-            width: auto;
+input[type="submit"] {
+width: auto;
             background-color: #3498db;
             color: white;
             cursor: pointer;
@@ -82,203 +83,261 @@
             font-size: 1.1em;
             font-weight: 600;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+}
 
-        input[type="submit"]:hover {
-            background-color: #2980b9;
-        }
+input[type="submit"]:hover {
+background-color: #2980b9;
+}
 
-        .paper-result {
-            margin-top: 25px;
+.paper-result {
+margin-top: 25px;
             border: 1px solid #ddd;
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+}
 
-        .paper-result h3 {
-            font-size: 1.6em; /* Increase the size of the paper title */
+.paper-result h3 {
+font-size: 1.6em; /* Increase the size of the paper title */
             margin-bottom: 10px; /* Add a bit of spacing below the title */
-        }
+}
 
-        .pagination {
-            margin-top: 25px;
+.pagination {
+margin-top: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
+}
 
-        .pagination .step-links, .pagination .go-to-page {
-            display: flex;
+.pagination .step-links, .pagination .go-to-page {
+display: flex;
             align-items: center;
-        }
+}
 
-        .pagination a, .pagination .current, .pagination .go-to-page input[type="number"], .pagination .go-to-page input[type="submit"] {
-            padding: 5px 10px;
+.pagination a, .pagination .current, .pagination .go-to-page input[type="number"], .pagination .go-to-page input[type="submit"] {
+padding: 5px 10px;
             margin: 0 5px;
             border-radius: 5px;
             transition: background-color 0.3s;
-        }
+}
 
-        .pagination a {
-            border: 1px solid #3498db;
+.pagination a {
+border: 1px solid #3498db;
             color: #3498db;
             text-decoration: none;
-        }
+}
 
-        .pagination a:hover, .pagination .go-to-page input[type="submit"]:hover {
-            background-color: #3498db;
+.pagination a:hover, .pagination .go-to-page input[type="submit"]:hover, .pagination .current {
+background-color: #3498db;
             color: white;
-        }
+}
 
-        .pagination .current {
-            background-color: #3498db;
-            color: white;
-        }
+.pagination .go-to-page label {
+margin-right: 5px;
+}
 
-        .pagination .go-to-page label {
-            margin-right: 5px;
-        }
-
-        .pagination .go-to-page input[type="number"] {
-            width: 50px;
+.pagination .go-to-page input[type="number"] {
+width: 50px;
             padding: 5px;
             margin: 0;
             border: 1px solid #3498db;
-        }
+}
 
-        .pagination .go-to-page input[type="submit"] {
-            background-color: #3498db;
+.pagination .go-to-page input[type="submit"] {
+background-color: #3498db;
             color: white;
             border: none;
             cursor: pointer;
             padding: 5px 10px;
-        }
-        
-        .search-section, .filters-section {
-            display: flex;
+}
+
+.search-section, .filters-section {
+display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 5px; /* Reduce gap between the elements inside these sections */
-            margin-bottom: 20px;
-        }
+            gap: 10px; /* Reduce gap between the elements inside these sections */
+            margin-bottom: 5px;
+}
 
-        .search-section span, .filters-section label {
-            margin-right: 10px;
+.search-section span, .filters-section label {
+margin-right: 10px;
             white-space: nowrap;
-        }
+}
 
-        #customDateRange {
-            display: flex;
+#customDateRange {
+display: flex;
             flex-wrap: wrap;
             gap: 10px;
             align-items: center;
             width: 100%;
-        }
+}
 
-        #customDateRange label, 
-        #customDateRange input[type="date"] {
-            display: inline-block;
-        }
+#customDateRange label, #customDateRange input[type="date"] {
+display: inline-block;
+}
 
-        #customDateRange input[type="date"] {
-            width: auto;
+#customDateRange input[type="date"] {
+width: auto;
             margin-right: 15px;
-        }
+}
 
-        .filters-section > label,
-        .filters-section > select {
-            margin-bottom: 15px;
-        }
+.filters-section > label, .filters-section > select {
+margin-bottom: 15px;
+}
 
-    </style>
+</style>
 </head>
-
 <body>
-    <div class="title-bar">
-        <a href="/" class="home-link">Homepage</a>
-        <h1>Literature Paper Search</h1>
-    </div>
-    <div class="content">
-        <form method="get" action="{% url 'paper_search_view' %}">
-            <div class="search-section">
-                <span>Search in:</span>
-                <select id="search_field" name="search_field">
-                    <option value="title">Title</option>
-                    <option value="abstract">Abstract</option>
-                    <option value="full_text">Full Text</option>
-                </select>
-                <input type="text" id="title_search" name="title_search" placeholder="Enter keyword...">
-            </div>
-            <div class="filters-section">
-                <label for="time_range">Time:</label>
-                <select id="time_range" name="time_range" onchange="toggleCustomRange(this)">
-                    <option value="anytime">Any time</option>
-                    <option value="2023">Since 2023</option>
-                    <option value="2022">Since 2022</option>
-                    <option value="2019">Since 2019</option>
-                    <option value="custom">Custom range</option>
-                </select>
+<div class="title-bar">
+<a class="home-link" href="/">
+    Homepage
+   </a>
+<h1>
+    Literature Paper Search
+   </h1>
+</div>
+<div class="content">
+<form action="{% url 'paper_search_view' %}" method="get">
+<div class="search-section">
+<span>
+      Searching:
+     </span>
+<select id="search_field" name="search_field" style="width: 10%; margin-right: 2%; display: inline-block; vertical-align: middle;">
+<option value="title">
+       Title
+      </option>
+<option value="abstract">
+       Abstract
+      </option>
+<option value="full_text">
+       Full Text
+      </option>
+</select>
+<div style="display: flex; align-items: center; position: relative;"><input id="title_search" name="title_search" placeholder="Enter keyword..." style="width: 600px; padding-right: 3%; position: relative; display: inline-block; vertical-align: middle; box-sizing: border-box;" type="text"/><button style="background: none; border: none; cursor: pointer; position: absolute; top: 50%; right: 0%; font-size: 1.2em; z-index: 10;" type="submit">🔍</button></div>
+<div style="display: flex; flex-wrap: nowrap; align-items: center; width: 100%;">
+<label for="time_range" style="margin-right: 20px;">
+       Time:
+      </label><div></div>
+<select id="time_range" name="time_range" onchange="toggleCustomRange(this)" style="margin-right: 30px;">
+<option value="anytime">
+        Any time
+       </option>
+<option value="2023">
+        Since 2023
+       </option>
+<option value="2022">
+        Since 2022
+       </option>
+<option value="2021">
+        Since 2021
+       </option>
+<option value="custom">
+        Custom range
+       </option>
+</select>
+<label for="sort_by" style="margin-right: 20px; white-space: nowrap;">
+       Sort by:
+      </label>
+<select id="sort_by" name="sort_by" style="align-self: center;">
+<option value="publication_date:desc">
+        Publication Date
+       </option>
+<option value="cited_by_count:desc">
+        Citations Count
+       </option>
+<option value="referenced_works_count:asc">
+        Referenced works Count
+       </option>
+<option value="relevance_score:desc">
+        Relevance Score
+       </option>
+</select>
+</div>
+</div>
+<div class="filters-section">
+<div id="customDateRange" style="display: none;">
+<label for="from_date">
+       From:
+      </label>
+<input id="from_date" name="from_date" type="date"/>
+<label for="to_date">
+       To:
+      </label>
+<input id="to_date" name="to_date" type="date"/>
+</div>
+</div>
 
-                <div id="customDateRange" style="display: none;">
-                    <label for="from_date">From:</label>
-                    <input type="date" id="from_date" name="from_date">
-                    <label for="to_date">To:</label>
-                    <input type="date" id="to_date" name="to_date">
-                </div>
-                
-                <label for="sort_by">Sort by:</label>
-                <select id="sort_by" name="sort_by">
-                    <option value="publication_date:desc">Publication Date</option>
-                    <option value="cited_by_count:desc">Citations Count</option>
-                    <option value="referenced_works_count:asc">Referenced works Count</option>
-                    <option value="relevance_score:desc">Relevance Score</option>
-                </select>
-            </div>
-            
-            <input type="submit" value="Search">
-        
-            {% for paper in results %}
-            <div class="paper-result">
-                <h3 style="font-size: 1.4em; color: #333;"><a href="{{ paper.doi }}" target="_blank">{{ paper.title }}</a></h3>
-                <p><strong>DOI:</strong> {{ paper.doi }}</p>
-                <p><strong>Publication Date:</strong> {{ paper.publication_date }}</p>
-                <p><strong>Authors:</strong> {{ paper.authors|join:", " }}</p>
-                <p><strong>Abstract:</strong> {{ paper.abstract }}</p>
-            </div>
-            {% endfor %}
+    {% for paper in results %}
+    <div class="paper-result">
+<h3 style="font-size: 1.4em; color: #333;">
+<a href="{{ paper.doi }}" target="_blank">
+       {{ paper.title }}
+      </a>
+</h3>
+<p>
+<strong>
+       DOI:
+      </strong>
+      {{ paper.doi }}
+     </p>
+<p>
+<strong>
+       Publication Date:
+      </strong>
+      {{ paper.publication_date }}
+     </p>
+<p>
+<strong>
+       Authors:
+      </strong>
+      {{ paper.authors|join:", " }}
+     </p>
+<p>
+<strong>
+       Abstract:
+      </strong>
+      {{ paper.abstract }}
+     </p>
+</div>
+    {% endfor %}
 
             {% if results %}
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page_results.has_previous %}
-                        <a href="?title_search={{ search_query }}&page=1&sort_by={{ request.GET.sort_by }}">« first</a>
-                        <a href="?title_search={{ search_query }}&page={{ page_results.previous_page_number }}&sort_by={{ request.GET.sort_by }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ page_results.number }} of {{ page_results.paginator.num_pages }}.
-                    </span>
-
-                    {% if page_results.has_next %}
-                        <a href="?title_search={{ search_query }}&page={{ page_results.next_page_number }}&sort_by={{ request.GET.sort_by }}">next</a>
-                        <a href="?title_search={{ search_query }}&page={{ page_results.paginator.num_pages }}&sort_by={{ request.GET.sort_by }}">last »</a>
-                    {% endif %}
-                </span>
-
-                <div class="go-to-page">
-                    <label for="direct_page">Go to:</label>
-                    <input type="number" id="direct_page" name="direct_page" min="1" max="{{ page_results.paginator.num_pages }}" placeholder="Page No.">
-                    <input type="submit" value="Go">
-                </div>
-            </div>
-            {% endif %}
-        </form>
-    </div>
-
-    <script>
-        function toggleCustomRange(selectElem) {
+    <div class="pagination">
+<span class="step-links">
+      {% if page_results.has_previous %}
+      <a href="?title_search={{ search_query }}&amp;page=1&amp;sort_by={{ request.GET.sort_by }}">
+       « first
+      </a>
+<a href="?title_search={{ search_query }}&amp;page={{ page_results.previous_page_number }}&amp;sort_by={{ request.GET.sort_by }}">
+       previous
+      </a>
+      {% endif %}
+      <span class="current">
+       Page {{ page_results.number }} of {{ page_results.paginator.num_pages }}.
+      </span>
+      {% if page_results.has_next %}
+      <a href="?title_search={{ search_query }}&amp;page={{ page_results.next_page_number }}&amp;sort_by={{ request.GET.sort_by }}">
+       next
+      </a>
+<a href="?title_search={{ search_query }}&amp;page={{ page_results.paginator.num_pages }}&amp;sort_by={{ request.GET.sort_by }}">
+       last »
+      </a>
+      {% endif %}
+     </span>
+<div class="go-to-page">
+<label for="direct_page">
+       Go to:
+      </label>
+<input id="direct_page" max="{{ page_results.paginator.num_pages }}" min="1" name="direct_page" placeholder="Page No." type="number"/>
+<input type="submit" value="Go"/>
+</div>
+</div>
+    {% endif %}
+   </form>
+</div>
+<script>
+   function toggleCustomRange(selectElem) {
             const customDateRangeDiv = document.getElementById("customDateRange");
             if (selectElem.value === "custom") {
                 customDateRangeDiv.style.display = "block";
@@ -286,8 +345,6 @@
                 customDateRangeDiv.style.display = "none";
             }
         }
-    </script>
-        
+  </script>
 </body>
-
 </html>
