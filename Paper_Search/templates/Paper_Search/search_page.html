@@ -198,7 +198,7 @@ margin-bottom: 15px;
    </h1>
 </div>
 <div class="content">
-<form action="{% url 'paper_search_view' %}" method="get">
+<form id="search-form" action="{% url 'paper_search_view' %}" method="get">
 <div class="search-section">
 <span>
       Searching:
@@ -346,5 +346,43 @@ margin-bottom: 15px;
             }
         }
   </script>
+
+<script>
+       function toggleCustomRange(selectElem) {
+           const customDateRangeDiv = document.getElementById("customDateRange");
+           if (selectElem.value === "custom") {
+               customDateRangeDiv.style.display = "block";
+           } else {
+               customDateRangeDiv.style.display = "none";
+           }
+       }
+   
+       function getQueryParam(name) {
+           const urlParams = new URLSearchParams(window.location.search);
+           return urlParams.get(name);
+       }
+   
+       document.addEventListener("DOMContentLoaded", function() {
+           // Set the search query input
+           const searchQuery = getQueryParam('title_search');
+           if (searchQuery) {
+               document.querySelector('input[name="title_search"]').value = searchQuery;
+           }
+   
+           // Set the search field dropdown
+           const searchField = getQueryParam('search_field');
+           if (searchField) {
+               document.querySelector('select[name="search_field"]').value = searchField;
+           }
+   
+           // Add similar logic for other inputs if necessary
+           // ...
+   
+           // If the direct_page input is used, manually submit the form to ensure all input values are sent
+           document.querySelector('input[name="direct_page"]').addEventListener('change', function() {
+               document.querySelector('#search-form').submit();
+           });
+       });   
+   </script>   
 </body>
 </html>
