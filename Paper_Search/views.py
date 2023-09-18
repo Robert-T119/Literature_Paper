@@ -19,7 +19,7 @@ def paper_search_view(request):
     elif time_range == '2022':
         base_filter += ",from_publication_date:2022-01-01,to_publication_date:2022-12-31"
     elif time_range == '2019':
-        base_filter += ",from_publication_date:2019-01-01,to_publication_date:2019-12-31"
+        base_filter += ",from_publication_date:2021-01-01,to_publication_date:2021-12-31"
     elif time_range == 'custom':
         from_date = request.GET.get('from_date')
         to_date = request.GET.get('to_date')
@@ -67,4 +67,3 @@ def paper_search_view(request):
         page_results = paginator.page(paginator.num_pages)
 
     return render(request, 'Paper_Search/search_page.html', {'results': results, 'page_results': page_results, 'search_query': search_query})
-
