@@ -240,7 +240,7 @@ margin-bottom: 15px;
        Sort by:
       </label>
 <select id="sort_by" name="sort_by" style="align-self: center;">
-<option value="publication_date:desc">
+<option value="publication_date:asc">
         Publication Date
        </option>
 <option value="cited_by_count:desc">
@@ -303,35 +303,46 @@ margin-bottom: 15px;
     {% endfor %}
 
             {% if results %}
-    <div class="pagination">
-<span class="step-links">
-      {% if page_results.has_previous %}
-      <a href="?title_search={{ search_query }}&amp;page=1&amp;sort_by={{ request.GET.sort_by }}">
-       « first
-      </a>
-<a href="?title_search={{ search_query }}&amp;page={{ page_results.previous_page_number }}&amp;sort_by={{ request.GET.sort_by }}">
-       previous
-      </a>
-      {% endif %}
-      <span class="current">
-       Page {{ page_results.number }} of {{ page_results.paginator.num_pages }}.
-      </span>
-      {% if page_results.has_next %}
-      <a href="?title_search={{ search_query }}&amp;page={{ page_results.next_page_number }}&amp;sort_by={{ request.GET.sort_by }}">
-       next
-      </a>
-<a href="?title_search={{ search_query }}&amp;page={{ page_results.paginator.num_pages }}&amp;sort_by={{ request.GET.sort_by }}">
-       last »
-      </a>
-      {% endif %}
-     </span>
+    
+<div class="pagination">
+    <span class="step-links">
+        {% if page_results.has_previous %}
+        <a href="?title_search={{ search_query }}&time_range={{ request.GET.time_range }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}&sort_by={{ request.GET.sort_by }}&page=1">
+            « first
+        </a>
+        <a href="?title_search={{ search_query }}&time_range={{ request.GET.time_range }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}&sort_by={{ request.GET.sort_by }}&page={{ page_results.previous_page_number }}">
+            previous
+        </a>
+        {% endif %}
+        <span class="current">
+            Page {{ page_results.number }} of {{ page_results.paginator.num_pages }}.
+        </span>
+        {% if page_results.has_next %}
+        <a href="?title_search={{ search_query }}&time_range={{ request.GET.time_range }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}&sort_by={{ request.GET.sort_by }}&page={{ page_results.next_page_number }}">
+            next
+        </a>
+        <a href="?title_search={{ search_query }}&time_range={{ request.GET.time_range }}&from_date={{ request.GET.from_date }}&to_date={{ request.GET.to_date }}&sort_by={{ request.GET.sort_by }}&page={{ page_results.paginator.num_pages }}">
+            last »
+        </a>
+        {% endif %}
+    </span>
+    
 <div class="go-to-page">
-<label for="direct_page">
-       Go to:
-      </label>
-<input id="direct_page" max="{{ page_results.paginator.num_pages }}" min="1" name="direct_page" placeholder="Page No." type="number"/>
-<input type="submit" value="Go"/>
+    <!-- Hidden input fields for preserving filters -->
+    <input type="hidden" name="search_field" value="{{ request.GET.search_field }}">
+    <input type="hidden" name="title_search" value="{{ request.GET.title_search }}">
+    <input type="hidden" name="time_range" value="{{ request.GET.time_range }}">
+    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
+    <input type="hidden" name="from_date" value="{{ request.GET.from_date }}">
+    <input type="hidden" name="to_date" value="{{ request.GET.to_date }}">
+    
+    <label for="direct_page">Go to:</label>
+    <input id="direct_page" max="{{ page_results.paginator.num_pages }}" min="1" name="direct_page" placeholder="Page No." type="number"/>
+    <input type="submit" value="Go"/>
 </div>
+
+</div>
+
 </div>
     {% endif %}
    </form>

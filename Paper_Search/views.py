@@ -18,7 +18,7 @@ def paper_search_view(request):
         base_filter += ",from_publication_date:2023-01-01"
     elif time_range == '2022':
         base_filter += ",from_publication_date:2022-01-01,to_publication_date:2022-12-31"
-    elif time_range == '2019':
+    elif time_range == '2021':
         base_filter += ",from_publication_date:2021-01-01,to_publication_date:2021-12-31"
     elif time_range == 'custom':
         from_date = request.GET.get('from_date')
