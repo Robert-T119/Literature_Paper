@@ -175,7 +175,7 @@
             <tbody>
                 {% for paper in papers %}
                 <tr>
-                    <td>{{ paper.DOI }}</td>
+                    <td><a href="https://doi.org/{{ paper.DOI }}" target="_blank">{{ paper.DOI }}</a></td>
                     <td>{{ paper.Title }}</td>
                     <td>{{ paper.SOFC_Predictions }}</td>
                     <td>{{ paper.SOFC_Materials_Predictions }}</td>

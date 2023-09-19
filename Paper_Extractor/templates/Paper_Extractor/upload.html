@@ -180,7 +180,7 @@
             <!-- Main row displaying essential info -->
             <tr>
                 <td>{{ paper.title }}</td>
-                <td>{{ paper.doi }}</td>
+                <td><a href="https://doi.org/{{ paper.doi }}" target="_blank">{{ paper.doi }}</a></td>
                 <td><button onclick="toggleDetails('details-{{ forloop.counter }}')">More Details</button></td>
             </tr>
             <!-- Hidden row for details -->
