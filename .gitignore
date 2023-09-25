@@ -28,8 +28,6 @@ share/python-wheels/
 MANIFEST
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -69,8 +67,11 @@ instance/
 # Scrapy stuff:
 .scrapy
 
+<<<<<<< HEAD
 target/
 
+=======
+>>>>>>> 75cc0f1ee490b136af6e9a4c2fc45952de5d367d
 # Jupyter Notebook
 .ipynb_checkpoints
 
