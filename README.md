@@ -90,9 +90,6 @@ The Literature Paper Project aims to simplify the process of managing and resear
 
 #### Smart PDF Query Chat
 - Utilizes OpenAI's GPT-3.5 to interact with uploaded PDFs, enabling Q&A sessions based on the paper's content.
-
-For further details or support, please contact: [tangbohui296@gmail.com](mailto:tangbohui296@gmail.com)
-
 ---
 
 ## Contact
