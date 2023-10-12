@@ -1,70 +1,101 @@
 # Literature Paper Project
 
+A one-stop solution for managing and interacting with your collection of scientific papers.
+
 ## Table of Contents
 1. [Installation Instructions](#installation-instructions)
-2. [Functions](#Functions)
+2. [Features](#features)
+3. [Contact](#contact)
 
 ---
 
 ## Installation Instructions
 
-### Required Applications
-- **Git Bash**: [Download Link](https://gitforwindows.org/)
-- **Visual Studio Code**: [Download Link](https://code.visualstudio.com/download)
-- **Python 3.11.5**: [Download Link](https://www.python.org/downloads/)
+### Prerequisites
 
-### Clone the GitHub Repository
-Open Git Bash and run the following command:
-\```
-git clone https://github.com/Robert-T119/Literature_Paper.git
-\```
+- **Git Bash**: [Download Here](https://gitforwindows.org/)
+- **Visual Studio Code**: [Download Here](https://code.visualstudio.com/download)
+- **Python 3.11.5**: [Download Here](https://www.python.org/downloads/)
 
-### Set Up the Project Environment
-Open Command Prompt in Windows and navigate to the project directory:
-\```
-cd Literature_Paper
-\```
-Create a virtual environment and activate it:
-\```
-python -m venv myenv
-.\myenv\Scripts\activate
-\```
+### Clone the Repository
 
-### Install Packages and Add Configuration
-Install the required packages:
-\```
-pip install -r requirements.txt
-\```
-Create a `.env` file in the project directory and paste your API keys inside:
-\```
-OPENAI_API_KEY='your_api_key'
-\```
+1. Open Git Bash.
+2. Run the following command:
 
-### Launch the Application Locally
-Run migrations and start the development server:
-\```
-python manage.py migrate
-python manage.py runserver
-\```
-You can now access the application at [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
+    ```bash
+    git clone https://github.com/Robert-T119/Literature_Paper.git
+    ```
+
+### Setup the Development Environment
+
+1. Open Command Prompt and navigate to the project directory:
+
+    ```bash
+    cd Literature_Paper
+    ```
+
+2. Create and activate a Python virtual environment:
+
+    ```bash
+    python -m venv myenv
+    .\myenv\Scripts\activate
+    ```
+
+### Install Dependencies and Configuration
+
+1. Install the required packages:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2. Create a `.env` file in the project directory and add your API keys:
+
+    ```bash
+    OPENAI_API_KEY='your_api_key'
+    ```
+
+### Run the Application
+
+1. Apply database migrations:
+
+    ```bash
+    python manage.py migrate
+    ```
+
+2. Start the development server:
+
+    ```bash
+    python manage.py runserver
+    ```
+
+3. Access the application at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 
 ---
 
-## Functions
+## Features
 
-### Tool Overview
-The Literature Paper Project is designed to streamline the management and interaction with a growing collection of scientific papers. It offers the following functionalities:
+### Overview
+
+The Literature Paper Project aims to simplify the process of managing and researching scientific papers. It offers the following features:
 
 #### Advanced Academic Paper Search
-- Provides a search interface for users to find papers based on various criteria such as title, publication date, and more.
+- Offers a robust search interface for finding papers based on criteria such as title, publication date, and more.
 
 #### SOFC Literature Paper Finder
-- A specialized tool for finding and recommending solid oxide fuel cell relevant papers based on user inputs and predefined research areas.
+- A specialized tool for discovering and recommending papers related to solid oxide fuel cells, tailored to specific research interests.
 
 #### Automated Paper Data Extractor
-- A dedicated module for uploading and managing PDFs, equipped with the capability to extract DOIs and fetch additional paper information.
+- Allows users to upload and manage PDFs, with the added feature of extracting DOIs and fetching supplementary paper information.
 
 #### Smart PDF Query Chat
-- An innovative tool that leverages the power of OpenAI's GPT-3.5 model to interact with uploaded PDFs, potentially performing Q&A based on the content.
+- Utilizes OpenAI's GPT-3.5 to interact with uploaded PDFs, enabling Q&A sessions based on the paper's content.
 
-For more detailed information on each tool, please contact: tangbohui296@gmail.com
+For further details or support, please contact: [tangbohui296@gmail.com](mailto:tangbohui296@gmail.com)
+
+---
+
+## Contact
+
+For any queries or support, feel free to reach out at [tangbohui296@gmail.com](mailto:tangbohui296@gmail.com).
+
