@@ -15,34 +15,34 @@
 
 ### Clone the GitHub Repository
 Open Git Bash and run the following command:
-\```bash
+\```
 git clone https://github.com/Robert-T119/Literature_Paper.git
 \```
 
 ### Set Up the Project Environment
 Open Command Prompt in Windows and navigate to the project directory:
-\```bash
+\```
 cd Literature_Paper
 \```
 Create a virtual environment and activate it:
-\```bash
+\```
 python -m venv myenv
-\myenv\Scripts\activate
+.\myenv\Scripts\activate
 \```
 
 ### Install Packages and Add Configuration
 Install the required packages:
-\```bash
+\```
 pip install -r requirements.txt
 \```
 Create a `.env` file in the project directory and paste your API keys inside:
-\```env
+\```
 OPENAI_API_KEY='your_api_key'
 \```
 
 ### Launch the Application Locally
 Run migrations and start the development server:
-\```bash
+\```
 python manage.py migrate
 python manage.py runserver
 \```
