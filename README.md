@@ -2,7 +2,7 @@
 
 ## Table of Contents
 1. [Installation Instructions](#installation-instructions)
-2. [Usage](#usage)
+2. [Functions(#Functions)
 
 ---
 
